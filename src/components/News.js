@@ -27,25 +27,29 @@ export class News extends Component {
   constructor(){
     super();
     this.state ={
-      article: this.article,
+      articles: this.articles,
       loading: false
     }
   }
+
+  async componentDidMount(){
+    let url = "https://newsapi.org/v2/top-headlines?country=in&apiKey=aaaf23f501894ebd8787d0c87f77183b"
+    let data = await fetch(url);
+    let parsedData = await data.json()
+    this.setState({articles: parsedData.articles})
+  }
+
   render() {
     return (
       <div className="container">
-        <div clasName="container my-3">
+        <div className="container my-3">
+        <div className="row">
           <h2>NewsMonkey - Top Headlines</h2>
-          <div className="row">
-            <div className="col-md-4">
-              <NewsItem title="myTitle" description="mydesc" imageUrl="https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg" newsUrl="TODO"/>
+          {this.state.articles.map((element)=>{
+           return <div className="col-md-4" key={element.url} >
+              <NewsItem title={element.title ? element.title.slice(0, 45):""} description={element.description?element.description.slice(0, 88):""} imageUrl={element.urlToImage} newsUrl={element.url}/>
             </div>
-            <div className="col-md-4">
-              <NewsItem title="myTitle" description="mydesc" />
-            </div>
-            <div className="col-md-4">
-              <NewsItem title="myTitle" description="mydesc" />
-            </div>
+         })}
           </div>
         </div>
       </div>
